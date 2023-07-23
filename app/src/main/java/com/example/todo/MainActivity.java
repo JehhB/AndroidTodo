@@ -19,8 +19,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupCategoryList() {
         RecyclerView list = findViewById(R.id.rvCategoryList);
+        CategoryAdapter adapter = new CategoryAdapter(this);
+
         LinearLayoutManager layoutMangager = new LinearLayoutManager(this);
-        CategoryAdapter adapter = new CategoryAdapter();
+        layoutMangager.setOrientation(LinearLayoutManager.HORIZONTAL);
+
 
         list.setAdapter(adapter);
         list.setLayoutManager(layoutMangager);
@@ -28,8 +31,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupTaskList() {
         RecyclerView list = findViewById(R.id.rvTaskList);
-        LinearLayoutManager layoutMangager = new LinearLayoutManager(this);
         TaskAdapter adapter = new TaskAdapter();
+
+        LinearLayoutManager layoutMangager = new LinearLayoutManager(this);
+        layoutMangager.setOrientation(LinearLayoutManager.VERTICAL);
 
         list.setAdapter(adapter);
         list.setLayoutManager(layoutMangager);
