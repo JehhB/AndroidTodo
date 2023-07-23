@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Todo</string>
+    <string name="welcome_placeholder">What\'s up, %s!</string>
+    <string name="task_count_placeholder">%d tasks</string>
+    <string name="category_label">CATEGORIES</string>
+    <string name="task_label">TASKS</string>
+    <string name="welcome_message">What\'s up!</string>
+    <string name="fab_button_description">Add new task</string>
+    <string name="drawer_button_description">Open menu</string>
+</resources>
