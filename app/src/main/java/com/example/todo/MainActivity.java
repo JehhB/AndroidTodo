@@ -1,13 +1,14 @@
 package com.example.todo;
 
+import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageButton;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Bundle;
-
 public class MainActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -15,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
 
         setupCategoryList();
         setupTaskList();
+        setupDrawer();
     }
 
     private void setupCategoryList() {
@@ -23,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
 
         LinearLayoutManager layoutMangager = new LinearLayoutManager(this);
         layoutMangager.setOrientation(LinearLayoutManager.HORIZONTAL);
-
 
         list.setAdapter(adapter);
         list.setLayoutManager(layoutMangager);
@@ -38,5 +39,32 @@ public class MainActivity extends AppCompatActivity {
 
         list.setAdapter(adapter);
         list.setLayoutManager(layoutMangager);
+    }
+
+    private void setupDrawer() {
+        ImageButton btnDrawer = findViewById(R.id.btnDrawer);
+        btnDrawer.setOnClickListener(this::showDrawer);
+
+        ImageButton btnDrawerMinimize = findViewById(R.id.btnDrawerMinimize);
+        btnDrawerMinimize.setOnClickListener(this::hideDrawer);
+        hideDrawer(null);
+    }
+
+    private void showDrawer(View view) {
+        View drawer = findViewById(R.id.drawer);
+        drawer.setVisibility(View.VISIBLE);
+        drawer
+                .animate()
+                .translationX(0)
+                .setDuration(250);
+    }
+
+    private void hideDrawer(View view) {
+        View drawer = findViewById(R.id.drawer);
+        drawer
+                .animate()
+                .translationX(-drawer.getWidth())
+                .withEndAction(() -> drawer.setVisibility(View.INVISIBLE))
+                .setDuration(200);
     }
 }
