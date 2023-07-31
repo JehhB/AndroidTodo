@@ -29,14 +29,12 @@ public class Task {
     private final Long createdAt;
     @ColumnInfo(name = "dueAt", defaultValue = "CURRENT_TIMESTAMP")
     private Long dueAt;
-
-
     @ColumnInfo(name = "completedAt", defaultValue = "CURRENT_TIMESTAMP")
     private Long completedAt;
 
-    public Task(long id, long category_id, String task, String description, long createdAt, @Nullable Long dueAt, @Nullable Long completedAt) {
+    public Task(Long id, Long categoryId, String task, String description, Long createdAt, @Nullable Long dueAt, @Nullable Long completedAt) {
         this.id = id;
-        this.categoryId = category_id;
+        this.categoryId = categoryId;
         this.task = task;
         this.description = description;
         this.createdAt = createdAt;
@@ -45,9 +43,9 @@ public class Task {
     }
 
     @Ignore
-    public Task(long category_id, String task, String description, @Nullable Long dueAt, @Nullable Long completedAt) {
+    public Task(Long categoryId, String task, String description, @Nullable Long dueAt, @Nullable Long completedAt) {
         this.id = null;
-        this.categoryId = category_id;
+        this.categoryId = categoryId;
         this.task = task;
         this.description = description;
         this.createdAt = null;

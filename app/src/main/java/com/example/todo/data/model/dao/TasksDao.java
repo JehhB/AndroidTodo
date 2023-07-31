@@ -12,10 +12,10 @@ import java.util.List;
 
 @Dao
 public interface TasksDao {
-    @Insert(entity = TasksDao.class)
+    @Insert
     public long insertTask(Task task);
 
-    @Update(entity = TasksDao.class)
+    @Update
     public void updateTask(Task task);
 
     @Query("SELECT * FROM tasks")

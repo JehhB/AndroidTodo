@@ -16,7 +16,7 @@ public interface CategoriesDao {
     public long insertCategory(Category category);
 
     @Update(entity = Category.class)
-    public long updateCategory(Category category);
+    public void updateCategory(Category category);
 
     @Query("SELECT categories.id, name, COUNT(tasks.id) AS task_count, " +
             "SUM(CASE WHEN tasks.completedAt IS NOT NULL THEN 1 ELSE 0 END) AS completed_task_count " +

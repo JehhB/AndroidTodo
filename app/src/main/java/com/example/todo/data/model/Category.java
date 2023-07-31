@@ -10,7 +10,7 @@ public class Category {
     private final Long id;
     public final String name;
 
-    public Category(long id, String name) {
+    public Category(Long id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -21,7 +21,7 @@ public class Category {
         this.name = name;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
