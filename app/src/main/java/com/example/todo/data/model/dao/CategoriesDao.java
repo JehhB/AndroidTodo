@@ -14,22 +14,22 @@ import java.util.List;
 @Dao
 public interface CategoriesDao {
     @Insert(entity = Category.class)
-    public long insertCategory(Category category);
+    long insertCategory(Category category);
 
     @Update(entity = Category.class)
-    public void updateCategory(Category category);
+    void updateCategory(Category category);
 
     @Query("SELECT * FROM categories")
-    public LiveData<List<Category>> getCategories();
+    LiveData<List<Category>> getCategories();
 
     @Query("SELECT categories.id AS id, categories.name AS name, COUNT(tasks.id) AS task_count, " +
             "SUM(CASE WHEN tasks.completedAt IS NOT NULL THEN 1 ELSE 0 END) AS completed_task_count " +
             "FROM categories LEFT JOIN tasks ON categories.id = tasks.category_id " +
             "GROUP BY categories.id " +
             "ORDER BY CASE WHEN SUM(CASE WHEN tasks.completedAt IS NOT NULL THEN 1 ELSE 0 END) > 0 THEN 1 ELSE 0 END, categories.id")
-    public LiveData<List<CategoryWithTaskCount>> getCategoriesWithTaskCount();
+    LiveData<List<CategoryWithTaskCount>> getCategoriesWithTaskCount();
 
-    public static class CategoryWithTaskCount {
+    class CategoryWithTaskCount {
         @Embedded
         public Category category;
         public int task_count;

@@ -13,14 +13,14 @@ import java.util.List;
 @Dao
 public interface TasksDao {
     @Insert
-    public long insertTask(Task task);
+    long insertTask(Task task);
 
     @Update
-    public void updateTask(Task task);
+    void updateTask(Task task);
 
     @Query("SELECT * FROM tasks")
-    public LiveData<List<Task>> getTasks();
+    LiveData<List<Task>> getTasks();
 
     @Query("SELECT * FROM tasks WHERE category_id = :categoryId")
-    public LiveData<List<Task>> getTasksFromCategory(long categoryId);
+    LiveData<List<Task>> getTasksFromCategory(long categoryId);
 }
