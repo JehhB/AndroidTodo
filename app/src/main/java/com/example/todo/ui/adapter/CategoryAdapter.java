@@ -1,6 +1,7 @@
 package com.example.todo.ui.adapter;
 
-import android.content.Context;
+import static com.example.todo.data.model.dao.CategoriesDao.CategoryWithTaskCount;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,15 +12,28 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.todo.R;
+import com.example.todo.data.model.Category;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
-    private final String[] data = {"Business", "Shopping List", "Academics"};
-    private final Context context;
+    private final String taskCountPlaceholder;
+    private List<CategoryWithTaskCount> categoriesWithTaskCounts;
 
-    public CategoryAdapter(Context context) {
+    public CategoryAdapter(String taskCountPlaceholder) {
         super();
-        this.context = context;
+        this.categoriesWithTaskCounts = Arrays.asList();
+        this.taskCountPlaceholder = taskCountPlaceholder;
+    }
 
+    public CategoryAdapter() {
+        this("%d Tasks");
+    }
+
+    public void setCategoriesWithTaskCounts(List<CategoryWithTaskCount> categoriesWithTaskCounts) {
+        this.categoriesWithTaskCounts = categoriesWithTaskCounts;
+        notifyDataSetChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -54,16 +68,20 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.getTxtCategoryName().setText(data[position]);
-        holder.getPbCategoryProgress().setProgress(0);
+        CategoryWithTaskCount categoryWithTaskCount = categoriesWithTaskCounts.get(position);
+        Category category = categoryWithTaskCount.category;
 
-        String taskCount = String.format(context.getString(R.string.task_count_placeholder), 0);
+        holder.getTxtCategoryName().setText(category.getName());
+        holder.getPbCategoryProgress().setProgress(categoryWithTaskCount.completed_task_count);
+        holder.getPbCategoryProgress().setMax(categoryWithTaskCount.task_count);
+
+        String taskCount = String.format(taskCountPlaceholder, categoryWithTaskCount.task_count);
         holder.getTxtCategoryTaskCount().setText(taskCount);
     }
 
     @Override
     public int getItemCount() {
-        return data.length;
+        return categoriesWithTaskCounts.size();
     }
 
 }

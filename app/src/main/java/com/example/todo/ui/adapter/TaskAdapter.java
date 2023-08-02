@@ -9,9 +9,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.todo.R;
+import com.example.todo.data.model.Task;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
-    private final String[] data = {"task 1", "task 2"};
+    private List<Task> tasks = Arrays.asList();
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final CheckBox cbTask;
@@ -26,6 +30,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         }
     }
 
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -36,12 +45,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.getCbTask().setText(data[position]);
+        Task task = tasks.get(position);
+        holder.getCbTask().setText(task.getTask());
+        holder.getCbTask().setChecked(task.getCompletedAt() != null);
     }
 
     @Override
     public int getItemCount() {
-        return data.length;
+        return tasks.size();
     }
 
 }
