@@ -46,6 +46,9 @@ dependencies {
     annotationProcessor "androidx.room:room-compiler:$room_version"
 
     testImplementation 'junit:junit:4.13.2'
+    testImplementation 'androidx.arch.core:core-testing:2.2.0'
+    testImplementation 'org.assertj:assertj-core:3.24.2'
+
     androidTestImplementation 'androidx.arch.core:core-testing:2.2.0'
     androidTestImplementation 'org.assertj:assertj-core:3.24.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
