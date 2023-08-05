@@ -1,5 +1,6 @@
 package com.example.todo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
         setupCategoryList();
         setupTaskList();
-        setupDrawer();
+        hideDrawer(null);
 
         mainViewModel.getCategoriesWithTaskCount().observe(this, list -> {
             categoryAdapter.setCategoriesWithTaskCounts(list);
@@ -76,16 +77,7 @@ public class MainActivity extends AppCompatActivity {
         list.setLayoutManager(layoutMangager);
     }
 
-    private void setupDrawer() {
-        ImageButton btnDrawer = findViewById(R.id.btnDrawer);
-        btnDrawer.setOnClickListener(this::showDrawer);
-
-        ImageButton btnDrawerMinimize = findViewById(R.id.btnDrawerMinimize);
-        btnDrawerMinimize.setOnClickListener(this::hideDrawer);
-        hideDrawer(null);
-    }
-
-    private void showDrawer(View view) {
+    public void showDrawer(View view) {
         View drawer = findViewById(R.id.drawer);
         drawer.setVisibility(View.VISIBLE);
         drawer
@@ -94,12 +86,17 @@ public class MainActivity extends AppCompatActivity {
                 .setDuration(250);
     }
 
-    private void hideDrawer(View view) {
+    public void hideDrawer(View view) {
         View drawer = findViewById(R.id.drawer);
         drawer
                 .animate()
                 .translationX(-drawer.getWidth())
                 .withEndAction(() -> drawer.setVisibility(View.INVISIBLE))
                 .setDuration(200);
+    }
+
+    public void addTask(View view) {
+        Intent intent = new Intent(this, TaskActivity.class);
+        startActivity(intent);
     }
 }

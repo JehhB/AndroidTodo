@@ -3,6 +3,7 @@
     <color name="black">#020417</color>
     <color name="white">#F4F6FD</color>
     <color name="gray">#9D9AB4</color>
-    <color name="accentColor">#2643C4</color>
-    <color name="background">#0e1f54</color>
+    <color name="accentColor700">#0569FE</color>
+    <color name="accentColor800">#2643C4</color>
+    <color name="accentColor900">#0e1f54</color>
 </resources>
