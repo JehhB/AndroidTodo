@@ -9,4 +9,11 @@
     <string name="drawer_button_description">Open menu</string>
     <string name="drawer_minimize_button_description">Close drawer</string>
     <string name="add_task">New task</string>
+    <string name="new_task_hint">Enter new task</string>
+    <string name="main_back_description">Back to task list</string>
+    <string name="new_category_message">New category</string>
+    <string name="new_category_title">New Category</string>
+    <string name="cancel">Cancel</string>
+    <string name="create">Create</string>
+    <string name="new_category_hint">New category</string>
 </resources>

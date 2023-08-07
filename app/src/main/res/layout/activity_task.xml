@@ -9,23 +9,59 @@
 
     <ImageButton
         android:id="@+id/btnTaskCancel"
-        android:layout_width="42dp"
-        android:layout_height="42dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:background="@drawable/back_button_background"
         android:src="@drawable/baseline_arrow_back"
         android:onClick="finish"
         app:layout_constraintEnd_toEndOf="parent"
+        android:contentDescription="@string/main_back_description"
         app:layout_constraintTop_toTopOf="parent" />
 
+
     <EditText
+        android:id="@+id/etTask"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="52dp"
+        android:layout_marginBottom="16dp"
+        android:background="@android:color/transparent"
+        android:hint="@string/new_task_hint"
+        android:inputType="textShortMessage"
+        android:padding="8dp"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/spnCategory"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Spinner
+        android:id="@+id/spnCategory"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:background="@drawable/spinner_background"
+        android:popupBackground="@drawable/spinner_background"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5" />
+        tools:listitem="@layout/item_spinner_category" />
+
+
+    <EditText
+        android:id="@+id/editTextTextMultiLine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@android:color/transparent"
+        android:hint="Add description"
+        android:inputType="textMultiLine"
+        android:lines="5"
+        android:padding="8dp"
+        android:gravity="start|top"
+        android:textColor="@color/black"
+        app:flow_horizontalBias="0.5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/spnCategory" />
 
     <Button
         android:layout_width="wrap_content"
@@ -36,5 +72,6 @@
         android:text="@string/add_task"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
