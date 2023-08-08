@@ -1,8 +1,8 @@
 package com.example.todo;
 
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -72,12 +72,23 @@ public class MainActivity extends AppCompatActivity {
         list.setAdapter(adapter);
         list.setLayoutManager(layoutMangager);
 
-        adapter.setOnClickListener(task -> {
-            Intent intent = new Intent(this, TaskActivity.class);
-            TaskParcelable taskParcelable = new TaskParcelable(task);
+        adapter.setOnBindViewHolderListener((viewHolder, task) -> {
+            viewHolder.getItemView().setOnClickListener(view -> {
+                Intent intent = new Intent(this, TaskActivity.class);
+                TaskParcelable taskParcelable = new TaskParcelable(task);
 
-            intent.putExtra(TaskActivity.EXTRA_TASK_ID, taskParcelable);
-            startActivity(intent);
+                intent.putExtra(TaskActivity.EXTRA_TASK_ID, taskParcelable);
+                startActivity(intent);
+            });
+
+            viewHolder.getCbTask().setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (isChecked) {
+                    task.setCompletedAt(System.currentTimeMillis());
+                } else {
+                    task.setCompletedAt(null);
+                }
+                mainViewModel.updateTask(task);
+            });
         });
 
         mainViewModel.getTasks().observe(this, tasks -> {
