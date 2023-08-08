@@ -11,4 +11,9 @@
     <string name="new_task_hint">Enter new task</string>
     <string name="main_back_description">Back to task list</string>
     <string name="new_category_message">New category</string>
+    <string name="edit_task">Edit task</string>
+    <string name="category_name_hint">Category name</string>
+    <string name="new_category_dialog_title">Create new category</string>
+    <string name="create_button">Create</string>
+    <string name="cancel_button">Cancel</string>
 </resources>

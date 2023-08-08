@@ -22,7 +22,7 @@ public class TaskViewModel extends ViewModel {
     }
 
     public boolean isNew() {
-        return task.getId() == 0;
+        return task.getId() == null;
     }
 
     public void saveTask() {
@@ -43,6 +43,10 @@ public class TaskViewModel extends ViewModel {
 
     public void setCategory(long category_id) {
         task.setCategoryId(category_id);
+    }
+
+    public void newCategory(String name) {
+        categoriesRepository.insertCategory(new Category(name));
     }
 
     public LiveData<List<Category>> getCategories() {

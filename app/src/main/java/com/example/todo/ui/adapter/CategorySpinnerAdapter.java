@@ -104,6 +104,7 @@ public class CategorySpinnerAdapter implements SpinnerAdapter {
             imageView.setImageDrawable(getAddDrawable());
         } else {
             textView.setText(data.get(i).getName());
+            textView.setTextColor(context.getColor(R.color.black));
             imageView.setImageDrawable(getCategoryAccent(R.color.accentColor700));
         }
     }

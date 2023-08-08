@@ -68,12 +68,14 @@
         app:layout_constraintTop_toBottomOf="@id/glHorizontalCenter" />
 
     <Button
+        android:id="@+id/btnTaskAction"
         android:layout_width="wrap_content"
         android:layout_height="52dp"
         android:backgroundTint="@color/accentColor700"
         android:drawableEnd="@drawable/baseline_add"
         android:elevation="4dp"
         android:text="@string/add_task"
+        android:onClick="saveTask"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

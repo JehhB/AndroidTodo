@@ -12,20 +12,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.todo.data.repository.CategoriesRepository;
-import com.example.todo.data.repository.CategoriesRepositoryImpl;
 import com.example.todo.data.repository.TasksRepository;
-import com.example.todo.data.repository.TasksRepositoryImpl;
-import com.example.todo.data.source.local.TaskDatabase;
 import com.example.todo.di.AppContainer;
 import com.example.todo.ui.adapter.CategoryAdapter;
 import com.example.todo.ui.adapter.TaskAdapter;
 import com.example.todo.ui.viewmodel.MainViewModel;
 
-import java.util.concurrent.ExecutorService;
-
 public class MainActivity extends AppCompatActivity {
     private MainViewModel mainViewModel;
-    private CategoryAdapter categoryAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,20 +43,21 @@ public class MainActivity extends AppCompatActivity {
         setupTaskList();
         hideDrawer(null);
 
-        mainViewModel.getCategoriesWithTaskCount().observe(this, list -> {
-            categoryAdapter.setCategoriesWithTaskCounts(list);
-        });
     }
 
     private void setupCategoryList() {
         RecyclerView list = findViewById(R.id.rvCategoryList);
-        categoryAdapter = new CategoryAdapter(getString(R.string.task_count_placeholder));
+        CategoryAdapter categoryAdapter = new CategoryAdapter(getString(R.string.task_count_placeholder));
 
         LinearLayoutManager layoutMangager = new LinearLayoutManager(this);
         layoutMangager.setOrientation(LinearLayoutManager.HORIZONTAL);
 
         list.setAdapter(categoryAdapter);
         list.setLayoutManager(layoutMangager);
+
+        mainViewModel.getCategoriesWithTaskCount().observe(this, categories -> {
+            categoryAdapter.setCategoriesWithTaskCounts(categories);
+        });
     }
 
     private void setupTaskList() {
@@ -74,6 +69,10 @@ public class MainActivity extends AppCompatActivity {
 
         list.setAdapter(adapter);
         list.setLayoutManager(layoutMangager);
+
+        mainViewModel.getTasks().observe(this, tasks -> {
+            adapter.setTasks(tasks);
+        });
     }
 
     public void showDrawer(View view) {
