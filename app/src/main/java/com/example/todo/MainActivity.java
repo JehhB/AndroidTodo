@@ -16,6 +16,7 @@ import com.example.todo.data.repository.CategoriesRepositoryImpl;
 import com.example.todo.data.repository.TasksRepository;
 import com.example.todo.data.repository.TasksRepositoryImpl;
 import com.example.todo.data.source.local.TaskDatabase;
+import com.example.todo.di.AppContainer;
 import com.example.todo.ui.adapter.CategoryAdapter;
 import com.example.todo.ui.adapter.TaskAdapter;
 import com.example.todo.ui.viewmodel.MainViewModel;
@@ -32,11 +33,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        TaskDatabase taskDatabase = TaskDatabase.getInstance(getApplicationContext());
-        ExecutorService executor = TaskDatabase.getExecutor();
+        AppContainer container = ((TodoApplication) getApplication()).getAppContainer();
+        TasksRepository tasksRepository = container.getTasksRepository();
+        CategoriesRepository categoriesRepository = container.getCategoriesRepository();
 
-        TasksRepository tasksRepository = new TasksRepositoryImpl(taskDatabase.tasksDao(), executor);
-        CategoriesRepository categoriesRepository = new CategoriesRepositoryImpl(taskDatabase.categoriesDao(), executor);
         mainViewModel = new ViewModelProvider(this, new ViewModelProvider.Factory() {
             @NonNull
             @Override

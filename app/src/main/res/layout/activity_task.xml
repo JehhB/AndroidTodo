@@ -8,14 +8,13 @@
     tools:context=".TaskActivity">
 
     <ImageButton
-        android:id="@+id/btnTaskCancel"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:background="@drawable/back_button_background"
-        android:src="@drawable/baseline_arrow_back"
-        android:onClick="finish"
-        app:layout_constraintEnd_toEndOf="parent"
         android:contentDescription="@string/main_back_description"
+        android:onClick="finish"
+        android:src="@drawable/baseline_arrow_back"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -40,28 +39,33 @@
         android:layout_height="48dp"
         android:background="@drawable/spinner_background"
         android:popupBackground="@drawable/spinner_background"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/glHorizontalCenter"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/item_spinner_category" />
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/glHorizontalCenter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.4" />
 
     <EditText
-        android:id="@+id/editTextTextMultiLine"
+        android:id="@+id/etDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:background="@android:color/transparent"
+        android:gravity="start|top"
         android:hint="Add description"
         android:inputType="textMultiLine"
         android:lines="5"
         android:padding="8dp"
-        android:gravity="start|top"
         android:textColor="@color/black"
         app:flow_horizontalBias="0.5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/spnCategory" />
+        app:layout_constraintTop_toBottomOf="@id/glHorizontalCenter" />
 
     <Button
         android:layout_width="wrap_content"
