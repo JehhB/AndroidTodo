@@ -11,22 +11,35 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.todo.R;
 import com.example.todo.data.model.Task;
 
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
-    private List<Task> tasks = Arrays.asList();
+    private final Set<OnClickListener> clickListeners = new HashSet<>();
+    private List<Task> tasks = Collections.emptyList();
+
+    public interface OnClickListener {
+        void onClick(Task task);
+    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
+        private final View itemView;
         private final CheckBox cbTask;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            this.itemView = itemView;
             cbTask = itemView.findViewById(R.id.cbTask);
         }
 
         public CheckBox getCbTask() {
             return cbTask;
+        }
+
+        public View getItemView() {
+            return itemView;
         }
     }
 
@@ -48,6 +61,12 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         Task task = tasks.get(position);
         holder.getCbTask().setText(task.getTask());
         holder.getCbTask().setChecked(task.getCompletedAt() != null);
+
+        holder.getItemView().setOnClickListener(view -> {
+            clickListeners.forEach(listener -> {
+                listener.onClick(tasks.get(position));
+            });
+        });
     }
 
     @Override
@@ -55,4 +74,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         return tasks.size();
     }
 
+    public void setOnClickListener(OnClickListener listener) {
+        clickListeners.add(listener);
+    }
+
+    public void removeOnClickListener(OnClickListener listener) {
+        clickListeners.remove(listener);
+    }
 }

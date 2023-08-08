@@ -21,6 +21,7 @@ import com.example.todo.ui.adapter.CategorySpinnerAdapter;
 import com.example.todo.ui.viewmodel.TaskViewModel;
 
 public class TaskActivity extends AppCompatActivity {
+    public static final String EXTRA_TASK_ID = "EXTRA_TASK_ID";
     private TaskViewModel taskViewModel;
 
     @Override
@@ -28,8 +29,7 @@ public class TaskActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task);
 
-        EditText etTask = findViewById(R.id.etTask);
-        etTask.requestFocus();
+        final Task task = getTask();
 
         AppContainer container = ((TodoApplication) getApplication()).getAppContainer();
         TasksRepository tasksRepository = container.getTasksRepository();
@@ -40,7 +40,7 @@ public class TaskActivity extends AppCompatActivity {
             @Override
             public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
                 return (T) new TaskViewModel(
-                        new Task(null, "", "", null, null),
+                        task,
                         tasksRepository,
                         categoriesRepository
                 );
@@ -48,6 +48,44 @@ public class TaskActivity extends AppCompatActivity {
         }).get(TaskViewModel.class);
 
         setupCategorySpinner();
+        setupActionButton();
+        initTaskActivity(task);
+    }
+
+    private void initTaskActivity(Task task) {
+        EditText etTask = findViewById(R.id.etTask);
+        EditText etDescription = findViewById(R.id.etDescription);
+        Spinner spnCategory = findViewById(R.id.spnCategory);
+
+        etTask.setText(task.getTask());
+        etDescription.setText(task.getDescription());
+
+        if (task.getCategoryId() == null) {
+            spnCategory.setSelection(spnCategory.getAdapter().getCount() - 1);
+        } else {
+            taskViewModel.getCategories().observe(this, categories -> {
+                for (int i = 0; i < categories.size(); ++i) {
+                    if (categories.get(i).getId() == task.getId()) {
+                        int position = i;
+                        spnCategory.post(() -> {
+                            spnCategory.setSelection(position);
+                        });
+                        return;
+                    }
+                }
+            });
+        }
+
+        etTask.requestFocus();
+    }
+
+    private Task getTask() {
+        Task temp = getIntent().getParcelableExtra(EXTRA_TASK_ID);
+        if (temp == null) {
+            return new Task(null, "", "", null, null);
+        } else {
+            return temp;
+        }
     }
 
     private void setupCategorySpinner() {
