@@ -9,6 +9,7 @@ import com.example.todo.data.repository.TasksRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class TasksRepositoryTestImpl implements TasksRepository {
@@ -25,9 +26,17 @@ public class TasksRepositoryTestImpl implements TasksRepository {
     }
 
     @Override
-    public void insertTask(Task task) {
+    public void insertTask(Task task, Consumer<Long> callback) {
         tasksList.add(task);
         tasksLiveData.setValue(tasksList);
+        if (callback != null) {
+            callback.accept((long) tasksList.size() - 1);
+        }
+    }
+
+    @Override
+    public void insertTask(Task task) {
+        insertTask(task, null);
     }
 
     @Override

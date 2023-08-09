@@ -7,6 +7,7 @@ import com.example.todo.data.model.dao.CategoriesDao;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
+import java.util.function.Consumer;
 
 public class CategoriesRepositoryImpl implements CategoriesRepository {
     private final CategoriesDao categoriesDao;
@@ -19,8 +20,18 @@ public class CategoriesRepositoryImpl implements CategoriesRepository {
     }
 
     @Override
+    public void insertCategory(Category category, Consumer<Long> callback) {
+        executor.execute(() -> {
+            long id = categoriesDao.insertCategory(category);
+            if (callback != null) {
+                callback.accept(id);
+            }
+        });
+    }
+
+    @Override
     public void insertCategory(Category category) {
-        executor.execute(() -> categoriesDao.insertCategory(category));
+        insertCategory(category, null);
     }
 
     @Override

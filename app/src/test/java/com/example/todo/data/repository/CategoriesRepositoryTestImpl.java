@@ -11,6 +11,7 @@ import com.example.todo.data.repository.CategoriesRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class CategoriesRepositoryTestImpl implements CategoriesRepository {
@@ -27,9 +28,17 @@ public class CategoriesRepositoryTestImpl implements CategoriesRepository {
     }
 
     @Override
-    public void insertCategory(Category category) {
+    public void insertCategory(Category category, Consumer<Long> callback) {
         categoryList.add(category);
         categoryLivedata.setValue(categoryList);
+        if (callback != null) {
+            callback.accept((long) (categoryList.size() - 1));
+        }
+    }
+
+    @Override
+    public void insertCategory(Category category) {
+        insertCategory(category, null);
     }
 
     @Override

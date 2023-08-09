@@ -9,6 +9,7 @@ import com.example.todo.data.repository.CategoriesRepository;
 import com.example.todo.data.repository.TasksRepository;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class TaskViewModel extends ViewModel {
     private final Task task;
@@ -45,8 +46,12 @@ public class TaskViewModel extends ViewModel {
         task.setCategoryId(category_id);
     }
 
-    public void newCategory(String name) {
-        categoriesRepository.insertCategory(new Category(name));
+    public void insertCategory(Category category, Consumer<Long> callback) {
+        categoriesRepository.insertCategory(category, callback);
+    }
+
+    public void insertCategory(Category category) {
+        insertCategory(category, null);
     }
 
     public LiveData<List<Category>> getCategories() {

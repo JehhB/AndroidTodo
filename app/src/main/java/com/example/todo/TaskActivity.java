@@ -1,6 +1,7 @@
 package com.example.todo;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -131,8 +132,12 @@ public class TaskActivity extends AppCompatActivity {
     }
 
     public void saveTask(View view) {
+        Handler handler = new Handler();
+
         EditText etTask = findViewById(R.id.etTask);
         String task = etTask.getText().toString().trim();
+        EditText etDescription = findViewById(R.id.etDescription);
+        String description = etDescription.getText().toString().trim();
 
         if (task.isEmpty()) {
             etTask.requestFocus();
@@ -142,7 +147,9 @@ public class TaskActivity extends AppCompatActivity {
         Spinner spnCategory = findViewById(R.id.spnCategory);
         Category category = (Category) spnCategory.getSelectedItem();
 
-        if (category == null) {
+        if (category != null) {
+            saveAndFinish(task, description, category.getId());
+        } else {
             View content = getLayoutInflater().inflate(R.layout.dialog_create_category, null);
             EditText etCategoryName = content.findViewById(R.id.etCategoryName);
 
@@ -151,22 +158,26 @@ public class TaskActivity extends AppCompatActivity {
                     .setView(content)
                     .setPositiveButton(R.string.create_button, (dialog1, which) -> {
                         String categoryName = etCategoryName.getText().toString().trim();
-                        if (!categoryName.isEmpty())
-                            taskViewModel.newCategory(categoryName);
+                        if (!categoryName.isEmpty()) {
+                            Category newCategory = new Category(categoryName);
+                            taskViewModel.insertCategory(newCategory, id -> {
+                                handler.post(() -> {
+                                    saveAndFinish(task, description, id);
+                                });
+                            });
+                        }
                     })
                     .setNegativeButton(R.string.cancel_button, (dialog1, which) -> {
                     })
                     .create();
             dialog.show();
-            return;
         }
+    }
 
-        EditText etDescription = findViewById(R.id.etDescription);
-        String description = etDescription.getText().toString().trim();
-
+    private void saveAndFinish(String task, String description, Long categoryId) {
         taskViewModel.setTask(task);
         taskViewModel.setDescription(description);
-        taskViewModel.setCategory(category.getId());
+        taskViewModel.setCategory(categoryId);
         taskViewModel.saveTask();
 
         finish();

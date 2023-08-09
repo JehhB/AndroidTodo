@@ -8,6 +8,7 @@ import com.example.todo.data.source.local.TaskDatabase;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
+import java.util.function.Consumer;
 
 public class TasksRepositoryImpl implements TasksRepository {
     private final TasksDao tasksDao;
@@ -19,8 +20,18 @@ public class TasksRepositoryImpl implements TasksRepository {
     }
 
     @Override
+    public void insertTask(Task task, Consumer<Long> callback) {
+        executor.execute(() -> {
+            long id = tasksDao.insertTask(task);
+            if (callback != null) {
+                callback.accept(id);
+            }
+        });
+    }
+
+    @Override
     public void insertTask(Task task) {
-        executor.execute(() -> tasksDao.insertTask(task));
+        insertTask(task, null);
     }
 
     @Override
