@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -19,6 +20,10 @@ import com.example.todo.data.repository.TasksRepository;
 import com.example.todo.di.AppContainer;
 import com.example.todo.ui.adapter.CategorySpinnerAdapter;
 import com.example.todo.ui.viewmodel.TaskViewModel;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class TaskActivity extends AppCompatActivity {
     public static final String EXTRA_TASK_ID = "EXTRA_TASK_ID";
@@ -53,12 +58,27 @@ public class TaskActivity extends AppCompatActivity {
     }
 
     private void initTaskActivity(Task task) {
+        TextView txtTaskComplete = findViewById(R.id.txtTaskComplete);
         EditText etTask = findViewById(R.id.etTask);
         EditText etDescription = findViewById(R.id.etDescription);
         Spinner spnCategory = findViewById(R.id.spnCategory);
 
         etTask.setText(task.getTask());
         etDescription.setText(task.getDescription());
+
+        if (task.getCompletedAt() != null) {
+            String placeholder = getString(R.string.completed_at_format);
+            Date date = new Date(task.getCompletedAt());
+
+            Locale locale = Locale.getDefault();
+            SimpleDateFormat dateFormat = new SimpleDateFormat(placeholder, locale);
+            String output = dateFormat.format(date);
+
+            txtTaskComplete.setText(output);
+            txtTaskComplete.setVisibility(View.VISIBLE);
+        } else {
+            txtTaskComplete.setVisibility(View.GONE);
+        }
 
         if (task.getCategoryId() == null) {
             spnCategory.setSelection(spnCategory.getAdapter().getCount() - 1);
