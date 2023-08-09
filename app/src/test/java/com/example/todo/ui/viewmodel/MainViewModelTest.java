@@ -2,7 +2,6 @@ package com.example.todo.ui.viewmodel;
 
 
 import static com.example.todo.LiveDataTestUtil.getOrAwaitValue;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
@@ -48,10 +47,12 @@ public class MainViewModelTest {
         mainViewModel.setSelectedCategory(null);
 
         List<Task> taskList = getOrAwaitValue(tasks);
-        assertThat(taskList).allSatisfy(task1 -> {
-            assertThat(tasksRepository.getTasksList())
-                    .anyMatch(task2 -> task2.getId() == task1.getId());
-        });
+        assertThat(taskList)
+                .isNotEmpty()
+                .allSatisfy(task1 -> {
+                    assertThat(tasksRepository.getTasksList())
+                            .anyMatch(task2 -> task2.getId() == task1.getId());
+                });
     }
 
     @Test
@@ -61,10 +62,12 @@ public class MainViewModelTest {
         mainViewModel.setSelectedCategory(category);
 
         List<Task> taskList = getOrAwaitValue(tasks);
-        assertThat(taskList).allSatisfy(task -> {
-            assertThat(task)
-                    .extracting(Task::getCategoryId)
-                    .isEqualTo(category.getId());
-        });
+        assertThat(taskList)
+                .isNotEmpty()
+                .allSatisfy(task -> {
+                    assertThat(task)
+                            .extracting(Task::getCategoryId)
+                            .isEqualTo(category.getId());
+                });
     }
 }

@@ -35,6 +35,6 @@ public class TasksRepositoryImpl implements TasksRepository {
 
     @Override
     public LiveData<List<Task>> getTasksFromCategory(long categoryId) {
-        return tasksDao.getTasks();
+        return tasksDao.getTasksFromCategory(categoryId);
     }
 }

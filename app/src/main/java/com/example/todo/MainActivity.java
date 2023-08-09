@@ -57,6 +57,12 @@ public class MainActivity extends AppCompatActivity {
         list.setAdapter(adapter);
         list.setLayoutManager(layoutMangager);
 
+        adapter.setOnBindViewHolderListener(((viewHolder, categoryWithTaskCount) -> {
+            viewHolder.getItemView().setOnClickListener(view -> {
+                mainViewModel.setSelectedCategory(categoryWithTaskCount.category);
+            });
+        }));
+
         mainViewModel.getCategoriesWithTaskCount().observe(this, categories -> {
             adapter.setCategoriesWithTaskCounts(categories);
         });

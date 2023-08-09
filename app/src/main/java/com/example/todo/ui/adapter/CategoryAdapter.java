@@ -15,9 +15,12 @@ import com.example.todo.R;
 import com.example.todo.data.model.Category;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
+    private final Set<OnBindViewHolderListener> onBindViewHolderListeners = new HashSet<>();
     private final String taskCountPlaceholder;
     private List<CategoryWithTaskCount> categoriesWithTaskCounts;
 
@@ -36,16 +39,29 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         notifyDataSetChanged();
     }
 
+    public interface OnBindViewHolderListener {
+        void onBindViewHolder(
+                CategoryAdapter.ViewHolder viewHolder,
+                CategoryWithTaskCount categoryWithTaskCount
+        );
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
+        private final View itemView;
         private final TextView txtCategoryName;
         private final TextView txtCategoryTaskCount;
         private final ProgressBar pbCategoryProgress;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            txtCategoryName = itemView.findViewById(R.id.txtCategoryName);
-            pbCategoryProgress = itemView.findViewById(R.id.pbCategoryProgress);
-            txtCategoryTaskCount = itemView.findViewById(R.id.txtCategoryTaskCount);
+            this.itemView = itemView;
+            this.txtCategoryName = itemView.findViewById(R.id.txtCategoryName);
+            this.pbCategoryProgress = itemView.findViewById(R.id.pbCategoryProgress);
+            this.txtCategoryTaskCount = itemView.findViewById(R.id.txtCategoryTaskCount);
+        }
+
+        public View getItemView() {
+            return itemView;
         }
 
         public TextView getTxtCategoryName() {
@@ -56,7 +72,9 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
             return pbCategoryProgress;
         }
 
-        public TextView getTxtCategoryTaskCount() { return txtCategoryTaskCount; }
+        public TextView getTxtCategoryTaskCount() {
+            return txtCategoryTaskCount;
+        }
     }
 
     @NonNull
@@ -77,6 +95,9 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
 
         String taskCount = String.format(taskCountPlaceholder, categoryWithTaskCount.task_count);
         holder.getTxtCategoryTaskCount().setText(taskCount);
+        onBindViewHolderListeners.forEach(listener -> {
+            listener.onBindViewHolder(holder, categoryWithTaskCount);
+        });
     }
 
     @Override
@@ -84,4 +105,11 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         return categoriesWithTaskCounts.size();
     }
 
+    public void setOnBindViewHolderListener(OnBindViewHolderListener onBindViewHolderListener) {
+        onBindViewHolderListeners.add(onBindViewHolderListener);
+    }
+
+    public void removeOnBindViewHolderListener(OnBindViewHolderListener onBindViewHolderListener) {
+        onBindViewHolderListeners.remove(onBindViewHolderListener);
+    }
 }

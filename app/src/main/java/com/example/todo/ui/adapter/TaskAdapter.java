@@ -20,11 +20,11 @@ import java.util.List;
 import java.util.Set;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
-    private final Set<Listener> bindViewHolderListener = new HashSet<>();
+    private final Set<OnBindViewHolderListener> onBindViewHolderListeners = new HashSet<>();
     private List<Task> tasks = Collections.emptyList();
 
-    public interface Listener {
-        void onClick(TaskAdapter.ViewHolder viewHolder, Task task);
+    public interface OnBindViewHolderListener {
+        void onBindViewHolder(TaskAdapter.ViewHolder viewHolder, Task task);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -83,8 +83,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
             txtTask.setPaintFlags( txtTask.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         }
 
-        bindViewHolderListener.forEach(listener -> {
-            listener.onClick(holder, tasks.get(position));
+        onBindViewHolderListeners.forEach(onBindViewHolderListener -> {
+            onBindViewHolderListener.onBindViewHolder(holder, tasks.get(position));
         });
     }
 
@@ -93,11 +93,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         return tasks.size();
     }
 
-    public void setOnBindViewHolderListener(Listener listener) {
-        bindViewHolderListener.add(listener);
+    public void setOnBindViewHolderListener(OnBindViewHolderListener onBindViewHolderListener) {
+        onBindViewHolderListeners.add(onBindViewHolderListener);
     }
 
-    public void removeOnBindViewHolderListener(Listener listener) {
-        bindViewHolderListener.remove(listener);
+    public void removeOnBindViewHolderListener(OnBindViewHolderListener onBindViewHolderListener) {
+        onBindViewHolderListeners.remove(onBindViewHolderListener);
     }
 }
