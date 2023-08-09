@@ -45,7 +45,12 @@ public class MainViewModel extends ViewModel {
     }
 
     public void setSelectedCategory(Category category) {
-        selectedCategory.setValue(category);
+        Category currentlySelected = selectedCategory.getValue();
+        if (currentlySelected == null || currentlySelected.getId() != category.getId()) {
+            selectedCategory.setValue(category);
+        } else {
+            selectedCategory.setValue(null);
+        }
     }
 
     public void insertTask(Task task) {
