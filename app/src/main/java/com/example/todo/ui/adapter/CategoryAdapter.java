@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.todo.R;
 import com.example.todo.data.model.Category;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,7 +26,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
 
     public CategoryAdapter(String taskCountPlaceholder) {
         super();
-        this.categoriesWithTaskCounts = Arrays.asList();
+        this.categoriesWithTaskCounts = Collections.emptyList();
         this.taskCountPlaceholder = taskCountPlaceholder;
     }
 
@@ -47,6 +47,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
+        private static final int PROGRESSBAR_ANIM_STEPS = 10;
+
         private final View itemView;
         private final TextView txtCategoryName;
         private final TextView txtCategoryTaskCount;
@@ -75,6 +77,14 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         public TextView getTxtCategoryTaskCount() {
             return txtCategoryTaskCount;
         }
+
+        public void setTaskCount(int count) {
+            pbCategoryProgress.setMax(count * PROGRESSBAR_ANIM_STEPS);
+        }
+
+        public void setProgress(int count) {
+            pbCategoryProgress.setProgress(count * PROGRESSBAR_ANIM_STEPS, true);
+        }
     }
 
     @NonNull
@@ -90,8 +100,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         Category category = categoryWithTaskCount.category;
 
         holder.getTxtCategoryName().setText(category.getName());
-        holder.getPbCategoryProgress().setProgress(categoryWithTaskCount.completed_task_count);
-        holder.getPbCategoryProgress().setMax(categoryWithTaskCount.task_count);
+        holder.setTaskCount(categoryWithTaskCount.task_count);
+        holder.setProgress(categoryWithTaskCount.completed_task_count);
 
         String taskCount = String.format(taskCountPlaceholder, categoryWithTaskCount.task_count);
         holder.getTxtCategoryTaskCount().setText(taskCount);
