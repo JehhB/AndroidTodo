@@ -40,6 +40,17 @@ public class TasksRepositoryTestImpl implements TasksRepository {
     }
 
     @Override
+    public void deleteTask(Task task) {
+        for (int i = 0; i < tasksList.size(); ++i) {
+            if (tasksList.get(i).getId() == task.getId()) {
+                tasksList.remove(i);
+                tasksLiveData.setValue(tasksList);
+                return;
+            }
+        }
+    }
+
+    @Override
     public void updateTask(Task task) {
         for (int i = 0; i < tasksList.size(); ++i) {
             if (tasksList.get(i).getId() == task.getId()) {

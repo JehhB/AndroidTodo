@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData;
 
 import com.example.todo.data.model.Task;
 import com.example.todo.data.model.dao.TasksDao;
-import com.example.todo.data.source.local.TaskDatabase;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -32,6 +31,13 @@ public class TasksRepositoryImpl implements TasksRepository {
     @Override
     public void insertTask(Task task) {
         insertTask(task, null);
+    }
+
+    @Override
+    public void deleteTask(Task task) {
+        executor.execute(() -> {
+            tasksDao.deleteTask(task);
+        });
     }
 
     @Override

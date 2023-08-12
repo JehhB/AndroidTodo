@@ -17,4 +17,7 @@
     <string name="create_button">Create</string>
     <string name="cancel_button">Cancel</string>
     <string name="completed_at_format">\'Completed at \'MMMM  dd, yyyy hh:mma</string>
+    <string name="task_deleted_message">The task was deleted</string>
+    <string name="undo_button">UNDO</string>
+    <string name="delete_description">Delete icon</string>
 </resources>

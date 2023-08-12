@@ -2,6 +2,7 @@ package com.example.todo.data.model.dao;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
@@ -17,6 +18,9 @@ public interface TasksDao {
 
     @Update
     void updateTask(Task task);
+
+    @Delete
+    void deleteTask(Task task);
 
     @Query("SELECT * FROM tasks")
     LiveData<List<Task>> getTasks();

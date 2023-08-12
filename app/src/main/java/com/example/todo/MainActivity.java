@@ -1,7 +1,6 @@
 package com.example.todo;
 
 import android.content.Intent;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.View;
 
@@ -12,15 +11,19 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.todo.data.model.Task;
 import com.example.todo.data.model.TaskParcelable;
 import com.example.todo.data.repository.CategoriesRepository;
 import com.example.todo.data.repository.TasksRepository;
 import com.example.todo.di.AppContainer;
 import com.example.todo.ui.adapter.CategoryAdapter;
 import com.example.todo.ui.adapter.TaskAdapter;
+import com.example.todo.ui.helper.ItemSwipeHelper;
 import com.example.todo.ui.viewmodel.MainViewModel;
 
 public class MainActivity extends AppCompatActivity {
+    private final static long DELETE_DELAY_MILIS = 10_000;
+
     private MainViewModel mainViewModel;
 
     @Override
@@ -37,7 +40,9 @@ public class MainActivity extends AppCompatActivity {
             @NonNull
             @Override
             public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-                return (T) new MainViewModel(tasksRepository, categoriesRepository);
+                @SuppressWarnings("unchecked")
+                T ret = (T) new MainViewModel(tasksRepository, categoriesRepository);
+                return ret;
             }
         }).get(MainViewModel.class);
 
@@ -51,11 +56,11 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView list = findViewById(R.id.rvCategoryList);
         CategoryAdapter adapter = new CategoryAdapter(getString(R.string.task_count_placeholder));
 
-        LinearLayoutManager layoutMangager = new LinearLayoutManager(this);
-        layoutMangager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
 
         list.setAdapter(adapter);
-        list.setLayoutManager(layoutMangager);
+        list.setLayoutManager(layoutManager);
 
         adapter.setOnBindViewHolderListener(((viewHolder, categoryWithTaskCount) -> {
             viewHolder.getItemView().setOnClickListener(view -> {
@@ -72,14 +77,14 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView list = findViewById(R.id.rvTaskList);
         TaskAdapter adapter = new TaskAdapter();
 
-        LinearLayoutManager layoutMangager = new LinearLayoutManager(this);
-        layoutMangager.setOrientation(LinearLayoutManager.VERTICAL);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
         list.setAdapter(adapter);
-        list.setLayoutManager(layoutMangager);
+        list.setLayoutManager(layoutManager);
 
         adapter.setOnBindViewHolderListener((viewHolder, task) -> {
-            viewHolder.getItemView().setOnClickListener(view -> {
+            viewHolder.getVgTask().setOnClickListener(view -> {
                 Intent intent = new Intent(this, TaskActivity.class);
                 TaskParcelable taskParcelable = new TaskParcelable(task);
 
@@ -96,6 +101,35 @@ public class MainActivity extends AppCompatActivity {
                 mainViewModel.updateTask(task);
             });
         });
+
+        ItemSwipeHelper swipeHelper = new ItemSwipeHelper() {
+            @Override
+            protected void onDrawChild(RecyclerView rv, RecyclerView.ViewHolder vh, float dX, boolean isForward) {
+                TaskAdapter.ViewHolder holder = (TaskAdapter.ViewHolder) vh;
+                if (holder.isDeleteShown()) return;
+                holder.getVgTask().setTranslationX(dX);
+            }
+
+            @Override
+            protected void onSwipe(RecyclerView rv, RecyclerView.ViewHolder vh, int direction) {
+                TaskAdapter.ViewHolder holder = (TaskAdapter.ViewHolder) vh;
+                if (holder.isDeleteShown()) return;
+
+                Task task = adapter.getItem(vh.getAdapterPosition());
+
+                DeleteThread delete = new DeleteThread(task);
+                holder.getTxtUndo().setOnClickListener(view -> {
+                    holder.hideDelete();
+                    delete.abort();
+                });
+
+                holder.showDelete(direction == SWIPE_RIGHT ?
+                        TaskAdapter.ViewHolder.TO_RIGHT :
+                        TaskAdapter.ViewHolder.TO_LEFT);
+                delete.start();
+            }
+        };
+        swipeHelper.attachToRecyclerView(list);
 
         mainViewModel.getTasks().observe(this, tasks -> {
             adapter.setTasks(tasks);
@@ -123,5 +157,34 @@ public class MainActivity extends AppCompatActivity {
     public void addTask(View view) {
         Intent intent = new Intent(this, TaskActivity.class);
         startActivity(intent);
+    }
+
+    private class DeleteThread extends Thread {
+        private volatile boolean doContinue;
+        private final Task task;
+
+        public DeleteThread(Task task) {
+            super();
+
+            doContinue = true;
+            this.task = task;
+        }
+
+        public void abort() {
+            doContinue = false;
+        }
+
+        @Override
+        public void run() {
+            super.run();
+            try {
+                Thread.sleep(DELETE_DELAY_MILIS);
+                if (doContinue) {
+                    mainViewModel.deleteTask(task);
+                }
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }

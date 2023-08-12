@@ -2,7 +2,6 @@ package com.example.todo.ui.helper;
 
 import android.animation.ValueAnimator;
 import android.graphics.Canvas;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -16,8 +15,9 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 @SuppressWarnings("unused")
 public class ItemSwipeHelper extends RecyclerView.ItemDecoration implements OnItemTouchListener {
-    private static final String TAG = "OnSwipeItemTouchListener";
-    
+    public static final int SWIPE_RIGHT = 1;
+    public static final int SWIPE_LEFT = 2;
+
     private VelocityTracker tracker;
     private ViewHolder selected;
     private float initX;
@@ -56,8 +56,6 @@ public class ItemSwipeHelper extends RecyclerView.ItemDecoration implements OnIt
     public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
         if (selected == null) return;
 
-        Log.d(TAG, "onTouchEvent: " + getDx(e));
-
         switch (e.getAction()) {
             case MotionEvent.ACTION_MOVE:
                 currentDx = getDx(e);
@@ -72,7 +70,7 @@ public class ItemSwipeHelper extends RecyclerView.ItemDecoration implements OnIt
             case MotionEvent.ACTION_UP:
                 if (isSwipe(e)) {
                     finishSwipe(rv, selected);
-                    onSwipe(rv, selected);
+                    onSwipe(rv, selected, getDirection(e));
                 } else {
                     revert(rv, selected);
                 }
@@ -101,7 +99,7 @@ public class ItemSwipeHelper extends RecyclerView.ItemDecoration implements OnIt
         vh.itemView.setTranslationX(dX);
     }
 
-    protected void onSwipe(RecyclerView rv, ViewHolder vh) {
+    protected void onSwipe(RecyclerView rv, ViewHolder vh, int direction) {
         if(rv.getAdapter() != null) {
             rv.getAdapter().notifyItemChanged(vh.getAdapterPosition());
         }
@@ -129,6 +127,10 @@ public class ItemSwipeHelper extends RecyclerView.ItemDecoration implements OnIt
 
     private float getDy(MotionEvent e) {
         return e.getY() - initY;
+    }
+
+    private int getDirection(MotionEvent e) {
+        return getDx(e) >= 0 ? SWIPE_RIGHT : SWIPE_LEFT;
     }
 
     private boolean isSwipe(MotionEvent e) {

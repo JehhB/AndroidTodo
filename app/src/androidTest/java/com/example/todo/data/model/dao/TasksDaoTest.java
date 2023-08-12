@@ -72,6 +72,16 @@ public class TasksDaoTest {
     }
 
     @Test
+    public void Expect_NoItemInTasks_When_TaskIsInsertedThenDeleted() throws InterruptedException {
+        final Task task = new Task(1L, 1L, "Task", "description", null, null, null);
+        tasksDao.insertTask(task);
+        tasksDao.deleteTask(task);
+
+        List<Task> tasks = getOrAwaitValue(tasksDao.getTasks());
+        assertThat(tasks).isEmpty();
+    }
+
+    @Test
     public void Expect_2ItemInTasks_When_TaskIsInsertedTwiceToNewDatabase() throws InterruptedException {
         final Task insertedTask = new Task(1L, "Task", "description", null, null);
         tasksDao.insertTask(insertedTask);

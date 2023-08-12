@@ -12,6 +12,8 @@ public interface TasksRepository {
 
     void insertTask(Task task);
 
+    void deleteTask(Task task);
+
     void updateTask(Task task);
 
     LiveData<List<Task>> getTasks();
