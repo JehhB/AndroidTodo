@@ -11,19 +11,33 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.todo.R;
 import com.example.todo.data.model.Task;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Objects;
 
-public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
-    private final Set<OnBindViewHolderListener> onBindViewHolderListeners = new HashSet<>();
-    private List<Task> tasks = Collections.emptyList();
+public class TaskAdapter extends ListAdapter<Task, TaskAdapter.ViewHolder> {
+    private final HashSet<OnBindViewHolderListener> onBindViewHolderListeners = new HashSet<>();
+
+    public TaskAdapter() {
+        super(new DiffUtil.ItemCallback<Task>() {
+            @Override
+            public boolean areItemsTheSame(@NonNull Task oldItem, @NonNull Task newItem) {
+                return Objects.equals(oldItem.getId(), newItem.getId());
+            }
+
+            @Override
+            public boolean areContentsTheSame(@NonNull Task oldItem, @NonNull Task newItem) {
+                return oldItem.equals(newItem);
+            }
+        });
+    }
 
     public interface OnBindViewHolderListener {
         void onBindViewHolder(TaskAdapter.ViewHolder viewHolder, Task task);
@@ -113,8 +127,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     }
 
     public void setTasks(List<Task> tasks) {
-        this.tasks = tasks;
-        notifyDataSetChanged();
+        submitList(tasks);
     }
 
     @NonNull
@@ -127,7 +140,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Task task = tasks.get(position);
+        Task task = getItem(position);
         Context context = holder.itemView.getContext();
         TextView txtTask = holder.getTxtTask();
         CheckBox cbTask = holder.getCbTask();
@@ -145,17 +158,12 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         holder.reset();
 
         onBindViewHolderListeners.forEach(onBindViewHolderListener -> {
-            onBindViewHolderListener.onBindViewHolder(holder, tasks.get(position));
+            onBindViewHolderListener.onBindViewHolder(holder, task);
         });
     }
 
-    @Override
-    public int getItemCount() {
-        return tasks.size();
-    }
-
     public Task getItem(int i) {
-        return tasks.get(i);
+        return super.getItem(i);
     }
 
     public void setOnBindViewHolderListener(OnBindViewHolderListener onBindViewHolderListener) {

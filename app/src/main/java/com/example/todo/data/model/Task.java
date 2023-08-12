@@ -7,6 +7,8 @@ import androidx.room.ForeignKey;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import java.util.Objects;
+
 @Entity(tableName = "tasks",
         foreignKeys = @ForeignKey(
                 entity = Category.class,
@@ -99,5 +101,21 @@ public class Task {
 
     public void setCompletedAt(Long completedAt) {
         this.completedAt = completedAt;
+    }
+
+    @Ignore
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj == null) return false;
+        if (!(obj instanceof Task)) return false;
+
+        Task other = (Task) obj;
+        return Objects.equals(this.getId(), other.getId()) ||
+                Objects.equals(this.getCategoryId(), other.getCategoryId()) ||
+                Objects.equals(this.getTask(), other.getTask()) ||
+                Objects.equals(this.getDescription(), other.getDescription()) ||
+                Objects.equals(this.getCreatedAt(), other.getCreatedAt()) ||
+                Objects.equals(this.getCompletedAt(), other.getCompletedAt()) ||
+                Objects.equals(this.getDueAt(), other.getDueAt());
     }
 }

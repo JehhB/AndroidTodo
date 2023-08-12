@@ -22,7 +22,7 @@ import com.example.todo.ui.helper.ItemSwipeHelper;
 import com.example.todo.ui.viewmodel.MainViewModel;
 
 public class MainActivity extends AppCompatActivity {
-    private final static long DELETE_DELAY_MILIS = 10_000;
+    private final static long DELETE_DELAY_MILIS = 5_000;
 
     private MainViewModel mainViewModel;
 
