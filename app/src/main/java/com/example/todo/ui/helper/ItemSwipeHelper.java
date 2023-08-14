@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 @SuppressWarnings("unused")
 public class ItemSwipeHelper extends RecyclerView.ItemDecoration implements OnItemTouchListener {
+    private static final int SWIPE_START_THRESHOLD = 4;
+
     public static final int SWIPE_RIGHT = 1;
     public static final int SWIPE_LEFT = 2;
 
@@ -143,7 +145,8 @@ public class ItemSwipeHelper extends RecyclerView.ItemDecoration implements OnIt
         if (selected != null) return;
         if (e.getAction() != MotionEvent.ACTION_MOVE) return;
         if (rv.getScrollState() == RecyclerView.SCROLL_STATE_DRAGGING) return;
-        if (Math.abs(getDy(e)) > Math.abs(getDx(e))) return;
+        if (Math.abs(getDy(e)) >= Math.abs(getDx(e))) return;
+        if (Math.abs(getDx(e)) < SWIPE_START_THRESHOLD) return;
 
         selected = findViewHolder(rv, e);
     }
