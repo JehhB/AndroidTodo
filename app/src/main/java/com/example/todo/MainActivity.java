@@ -5,13 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,7 +24,6 @@ import com.example.todo.ui.helper.ItemSwipeHelper;
 import com.example.todo.ui.viewmodel.MainViewModel;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "MainActivity";
     private final static long DELETE_DELAY_MILLIS = 5_000;
 
     private MainViewModel mainViewModel;
@@ -145,9 +142,11 @@ public class MainActivity extends AppCompatActivity {
         *   https://medium.com/mobile-app-development-publication/recyclerview-supported-wrap-content-not-quite-f04a942ce624
         *   For now decrease remove animation duration and add layout transition to mitigate effect
         */
-        list.getItemAnimator().setRemoveDuration(15);
+        final RecyclerView.ItemAnimator animator = list.getItemAnimator();
+        if (animator != null) {
+            animator.setRemoveDuration(15);
+        }
 
-        list.getLayoutTransition();
         LayoutTransition layoutTransition = new LayoutTransition();
         layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
         ((ViewGroup) findViewById(R.id.vgMain)).setLayoutTransition(layoutTransition);

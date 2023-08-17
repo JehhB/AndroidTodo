@@ -20,4 +20,5 @@
     <string name="task_deleted_message">The task was deleted</string>
     <string name="undo_button">UNDO</string>
     <string name="delete_description">Delete icon</string>
+    <string name="add_description_hint">Add description</string>
 </resources>
