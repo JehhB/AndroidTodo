@@ -1,5 +1,6 @@
 package com.example.todo.data.model.dao;
 
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Embedded;
@@ -10,6 +11,7 @@ import androidx.room.Update;
 import com.example.todo.data.model.Category;
 
 import java.util.List;
+import java.util.Objects;
 
 @Dao
 public interface CategoriesDao {
@@ -34,5 +36,14 @@ public interface CategoriesDao {
         public Category category;
         public int task_count;
         public int completed_task_count;
+
+        @Override
+        public boolean equals(@Nullable Object obj) {
+            if (!(obj instanceof CategoryWithTaskCount)) return false;
+            CategoryWithTaskCount another = (CategoryWithTaskCount) obj;
+            return task_count == another.task_count &&
+                    completed_task_count == another.completed_task_count &&
+                    Objects.equals(category, another.category);
+        }
     }
 }

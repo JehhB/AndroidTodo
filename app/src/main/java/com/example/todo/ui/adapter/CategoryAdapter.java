@@ -9,24 +9,34 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.todo.R;
 import com.example.todo.data.model.Category;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
-public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
+public class CategoryAdapter extends ListAdapter<CategoryWithTaskCount, CategoryAdapter.ViewHolder> {
     private final Set<OnBindViewHolderListener> onBindViewHolderListeners = new HashSet<>();
     private final String taskCountPlaceholder;
-    private List<CategoryWithTaskCount> categoriesWithTaskCounts;
 
     public CategoryAdapter(String taskCountPlaceholder) {
-        super();
-        this.categoriesWithTaskCounts = Collections.emptyList();
+        super(new DiffUtil.ItemCallback<CategoryWithTaskCount>() {
+            @Override
+            public boolean areItemsTheSame(@NonNull CategoryWithTaskCount oldItem, @NonNull CategoryWithTaskCount newItem) {
+                return Objects.equals(oldItem.category.getId(), newItem.category.getId());
+            }
+
+            @Override
+            public boolean areContentsTheSame(@NonNull CategoryWithTaskCount oldItem, @NonNull CategoryWithTaskCount newItem) {
+                return Objects.equals(oldItem, newItem);
+            }
+        });
         this.taskCountPlaceholder = taskCountPlaceholder;
     }
 
@@ -35,8 +45,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     }
 
     public void setCategoriesWithTaskCounts(List<CategoryWithTaskCount> categoriesWithTaskCounts) {
-        this.categoriesWithTaskCounts = categoriesWithTaskCounts;
-        notifyDataSetChanged();
+        this.submitList(categoriesWithTaskCounts);
     }
 
     public interface OnBindViewHolderListener {
@@ -96,7 +105,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        CategoryWithTaskCount categoryWithTaskCount = categoriesWithTaskCounts.get(position);
+        CategoryWithTaskCount categoryWithTaskCount = getItem(position);
         Category category = categoryWithTaskCount.category;
 
         holder.getTxtCategoryName().setText(category.getName());
@@ -108,11 +117,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         onBindViewHolderListeners.forEach(listener -> {
             listener.onBindViewHolder(holder, categoryWithTaskCount);
         });
-    }
-
-    @Override
-    public int getItemCount() {
-        return categoriesWithTaskCounts.size();
     }
 
     public void setOnBindViewHolderListener(OnBindViewHolderListener onBindViewHolderListener) {

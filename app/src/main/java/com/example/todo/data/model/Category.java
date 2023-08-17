@@ -1,8 +1,11 @@
 package com.example.todo.data.model;
 
+import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+
+import java.util.Objects;
 
 @Entity(tableName = "categories")
 public class Category {
@@ -31,5 +34,14 @@ public class Category {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Ignore
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (!(obj instanceof Category)) return false;
+        Category another = (Category) obj;
+        return Objects.equals(id, another.id) &&
+                Objects.equals(name, another.name);
     }
 }
